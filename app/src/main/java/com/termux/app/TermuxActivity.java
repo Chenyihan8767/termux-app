@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.termux.R;
 import com.termux.app.api.file.FileReceiverActivity;
 import com.termux.app.terminal.TermuxActivityRootView;
+import com.termux.app.terminal.TermuxSessionDrawerLayout;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.io.TermuxTerminalExtraKeys;
 import com.termux.shared.activities.ReportActivity;
@@ -232,8 +233,10 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         mTermuxActivityRootView.setOnApplyWindowInsetsListener(new TermuxActivityRootView.WindowInsetsListener());
 
         View content = findViewById(android.R.id.content);
+        TermuxSessionDrawerLayout drawer = findViewById(R.id.drawer_layout);
         content.setOnApplyWindowInsetsListener((v, insets) -> {
             mNavBarHeight = insets.getSystemWindowInsetBottom();
+            drawer.updateGestureExclusion();
             return insets;
         });
 
@@ -465,7 +468,10 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         RelativeLayout relativeLayout = findViewById(R.id.activity_termux_root_relative_layout);
         int marginHorizontal = mProperties.getTerminalMarginHorizontal();
         int marginVertical = mProperties.getTerminalMarginVertical();
-        ViewUtils.setLayoutMarginsInDp(relativeLayout, marginHorizontal, marginVertical, marginHorizontal, marginVertical);
+        // Keep the drawer's touch area flush with the screen edge.
+        ViewUtils.setLayoutMarginsInDp(relativeLayout, 0, marginVertical, 0, marginVertical);
+        ViewUtils.setLayoutMarginsInDp(findViewById(R.id.terminal_view), marginHorizontal, 0, marginHorizontal, 0);
+        ViewUtils.setLayoutMarginsInDp(getTerminalToolbarViewPager(), marginHorizontal, 0, marginHorizontal, 0);
     }
 
 
